@@ -1,12 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
+    @* <div class="sidebar"> *@
         <NavMenu />
-    </div>
+    @* </div> *@
 
     <main>
-        <div class="top-row px-4 auth">
+        <div class="top-row px-4 auth d-flex justify-content-between">
+            <Icon Name="IconName.List" role="button" @onclick="ToggleSidebar" />
             <LoginDisplay />
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
@@ -16,3 +17,10 @@
         </article>
     </main>
 </div>
+
+@code {
+    private void ToggleSidebar()
+    {
+        Console.WriteLine("Pulsado toggleSidebar");
+    }
+}

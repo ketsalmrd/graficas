@@ -1,39 +1,74 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">application</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
+﻿<Sidebar @ref="sidebar"
+    Href="/"
+    IconName="IconName.HouseDoorFill"
+    Title="Gráficas Velasco"
+    BadgeText="v1.0.0"
+    DataProvider="SidebarDataProvider" 
+    />
+<style>
+    :root {
+        --bb-sidebar-width: 270px;
+        --bb-sidebar-collapsed-width: 50px;
+        --bb-sidebar-background-color: rgba(234, 234, 234, 1);
+        --bb-sidebar-top-row-background-color: rgba(0,0,0,0.08);
+        --bb-sidebar-top-row-border-color: rgb(194,192,192);
+        --bb-sidebar-title-text-color: rgb(0,0,0);
+        --bb-sidebar-brand-icon-color: #6f42c1;
+        --bb-sidebar-brand-image-width: 24px;
+        --bb-sidebar-brand-image-height: 24px;
+        --bb-sidebar-title-badge-text-color: rgb(255,255,255);
+        --bb-sidebar-title-badge-background-color: rgba(25,135,84,var(--bs-bg-opacity,1));
+        --bb-sidebar-navbar-toggler-icon-color: rgb(0,0,0);
+        --bb-sidebar-navbar-toggler-background-color: rgba(0,0,0,0.08);
+        --bb-sidebar-content-border-color: rgb(194,192,192);
+        --bb-sidebar-nav-item-text-color: rgba(0,0,0,0.9);
+        --bb-sidebar-nav-item-text-active-color-rgb: 0,0,0;
+        --bb-sidebar-nav-item-text-hover-color: rgba(var(--bb-sidebar-nav-item-text-active-color-rgb),0.9);
+        --bb-sidebar-nav-item-text-active-color: rgba(var(--bb-sidebar-nav-item-text-active-color-rgb),0.9);
+        --bb-sidebar-nav-item-background-hover-color: rgba(var(--bb-sidebar-nav-item-text-active-color-rgb),0.08);
+        --bb-sidebar-nav-item-group-background-color: rgba(var(--bb-sidebar-nav-item-text-active-color-rgb),0.08);
+    }
+</style>
 
 @code {
-    private bool collapseNavMenu = true;
+    Sidebar? sidebar;
+    IEnumerable<NavItem>? navItems;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
+    @* protected override void OnAfterRender(bool firstRender)
     {
-        collapseNavMenu = !collapseNavMenu;
+        if (firstRender)
+        {
+            sidebar.ToggleSidebar();
+        }
+    } *@
+
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
+    {
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Dashboard"},
+
+            new NavItem { Id = "2", IconName = IconName.LayoutSidebarInset, Text = "Ficheros Maestros" },
+            new NavItem { Id = "3", Href = "/counter", IconName = IconName.PersonSquare, Text = "Clientes", ParentId="2", Class="px-3"},
+
+            new NavItem { Id = "4", IconName = IconName.LayoutSidebarInset, Text = "Almacen" },
+            new NavItem { Id = "5", Href = "/counter", IconName = IconName.PersonSquare, Text = "Material", ParentId="4", Class="px-3"},
+            new NavItem { Id = "6", Href = "/counter", IconName = IconName.PersonSquare, Text = "Productos Terminados", ParentId="4", Class="px-3"},
+
+            new NavItem { Id = "7", IconName = IconName.ExclamationTriangleFill, Text = "Facturación" },
+            new NavItem { Id = "8", Href = "/fetchdata", IconName = IconName.CheckCircleFill, Text = "Presupuestos", ParentId="7", Class="px-3"},
+            new NavItem { Id = "9", Href = "/fetchdata", IconName = IconName.CheckCircleFill, Text = "Facturas", ParentId="7", Class="px-3"},
+         };
+
+        return navItems;
     }
 }
